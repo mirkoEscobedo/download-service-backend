@@ -14,9 +14,14 @@ export async function fetchThreadData(url: string): Promise<any> {
 
     await page.goto(url, { waitUntil: "networkidle2" });
     const pageContent = await page.evaluate(() => document.body.innerText);
+    console.log("page content recieved", pageContent);
     await browser.close();
-
-    return JSON.parse(pageContent);
+    try {
+      return JSON.parse(pageContent);
+    } catch (error) {
+      console.error("error parsing Json, received content: ", pageContent);
+      throw new Error("Failed to parse JSON response from thread data.");
+    }
   } catch (error) {
     console.error("Error fetching threadData: ", error);
     return null;
