@@ -30,16 +30,9 @@ app.use(rateLimiter);
 app.use(requestLogger);
 
 // Routes
+
 app.use("/health-check", healthCheckRouter);
 app.use("/users", userRouter);
-
-// Swagger UI
-app.use(openAPIRouter);
-
-// Error handlers
-app.use(errorHandler());
-
-// TRPC
 app.use(
   "/trpc",
   createExpressMiddleware({
@@ -47,5 +40,12 @@ app.use(
     createContext,
   }),
 );
+// Swagger UI
+app.use(openAPIRouter);
+
+// Error handlers
+app.use(errorHandler());
+
+// TRPC
 
 export { app, logger };

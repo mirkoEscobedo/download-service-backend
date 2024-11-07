@@ -19,6 +19,7 @@ export const mediaRouter = router({
         filename: post.filename,
         url: `https://i.4cdn.org/${threadData.board}/${post.tim}${post.ext}`,
       }));
+    console.log("medialist final");
     return mediaList;
   }),
 
