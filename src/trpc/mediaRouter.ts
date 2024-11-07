@@ -4,7 +4,8 @@ import { publicProcedure, router } from "./trpc";
 
 export const mediaRouter = router({
   getMediaList: publicProcedure.input(z.object({ link: z.string() })).query(async ({ input }) => {
-    const modifiedLink = input.link.includes("4chan")
+    console.log("link", input.link);
+    const modifiedLink = input.link.includes("4cdn")
       ? `https://corsproxy.io/?${encodeURIComponent(input.link)}`
       : input.link;
 

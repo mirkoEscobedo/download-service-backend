@@ -1,6 +1,7 @@
 import puppeteer from "puppeteer";
 
 export async function fetchThreadData(url: string): Promise<any> {
+  console.log(url);
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -13,7 +14,9 @@ export async function fetchThreadData(url: string): Promise<any> {
     );
 
     await page.goto(url, { waitUntil: "networkidle2" });
+    console.log(page);
     const pageContent = await page.evaluate(() => document.body.innerText);
+
     console.log("page content recieved", pageContent);
     await browser.close();
     try {
