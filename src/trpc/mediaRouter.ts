@@ -1,12 +1,11 @@
+import { transformLink } from "@/common/utils/chanUtils";
 import { fetchThreadData, fetchThreadMedia } from "@/services/puppeteerService";
 import { z } from "zod";
 import { publicProcedure, router } from "./trpc";
 
 export const mediaRouter = router({
   getChanMediaList: publicProcedure.input(z.object({ link: z.string() })).query(async ({ input }) => {
-    const modifiedLink = input.link.includes("4cdn")
-      ? `https://corsproxy.io/?${encodeURIComponent(input.link)}`
-      : input.link;
+    const modifiedLink = transformLink(input.link);
 
     const threadData = await fetchThreadData(modifiedLink);
     if (!threadData || !Array.isArray(threadData.posts)) {
