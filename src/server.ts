@@ -10,6 +10,7 @@ import cors from "cors";
 import express, { type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
+import { imageProxyHandler } from "./common/middleware/imageProxy";
 import { appRouter } from "./trpc";
 
 const createContext = () => ({});
@@ -33,6 +34,9 @@ app.use(requestLogger);
 
 app.use("/health-check", healthCheckRouter);
 app.use("/users", userRouter);
+
+app.get("/proxy-image", imageProxyHandler);
+
 app.use(
   "/trpc",
   createExpressMiddleware({
