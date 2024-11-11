@@ -1,4 +1,4 @@
-export function transformLink(normalThreadUrl: string): string {
+export function transformLink(normalThreadUrl: string) {
   try {
     const url = new URL(normalThreadUrl);
 
@@ -10,7 +10,7 @@ export function transformLink(normalThreadUrl: string): string {
     }
     const cdnUrl: string = `https://a.4cdn.org/${board}/thread/${threadId}.json`;
     const finalUrl: string = addCors(cdnUrl);
-    return finalUrl;
+    return { board, link: finalUrl };
   } catch (error) {
     console.log(error);
     throw new Error("Invalid or Expired thread url");
