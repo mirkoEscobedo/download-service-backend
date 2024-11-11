@@ -5,7 +5,7 @@ import { publicProcedure, router } from "./trpc";
 
 export const mediaRouter = router({
   getChanMediaList: publicProcedure.input(z.object({ link: z.string() })).query(async ({ input }) => {
-    const modifiedLink = transformLink(input.link);
+    const { board, link: modifiedLink } = transformLink(input.link);
 
     const threadData = await fetchThreadData(modifiedLink);
     if (!threadData || !Array.isArray(threadData.posts)) {
@@ -16,7 +16,9 @@ export const mediaRouter = router({
       .filter((post: any) => post.ext?.match(/\.(webm|jpg|jpeg|png|gif)$/))
       .map((post: any) => ({
         filename: post.filename,
-        url: `https://i.4cdn.org/${threadData.board}/${post.tim}${post.ext}`,
+        url: `https://i.4cdn.org/${board}/${post.tim}${post.ext}`,
+        board: board,
+        tim: post.tim,
       }));
 
     return chanMediaList;
