@@ -1,5 +1,10 @@
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { getBase64Thumbnail, transformLink } from "@/common/utils/chanUtils";
+import { convertMedia } from "@/services/convertService";
+import { downloadMediaFiles } from "@/services/downloadService";
 import { fetchThreadData, fetchThreadMedia } from "@/services/puppeteerService";
+import { createZipFromFiles } from "@/services/zipService";
 import { z } from "zod";
 import { publicProcedure, router } from "./trpc";
 
@@ -41,4 +46,37 @@ export const mediaRouter = router({
     const downloadFiles = await fetchThreadMedia(input.mediaUrls);
     return { succes: true, files: downloadFiles };
   }),
+
+  convertAndDownloadMedia: publicProcedure
+    .input(
+      z.object({
+        mediaUrls: z.array(z.string()),
+        format: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { mediaUrls, format } = input;
+
+      try {
+        const downloadedFiles = await downloadMediaFiles(mediaUrls);
+
+        let processedFiles: string[] = [];
+        if (format && format !== "default") {
+          processedFiles = await Promise.all(downloadedFiles.map((filePath) => convertMedia(filePath, format)));
+        } else {
+          processedFiles = downloadedFiles;
+        }
+
+        if (processedFiles.length > 1) {
+          const zipPath = path.join(tmpdir(), `download_${Date.now()}.zip`);
+          await createZipFromFiles(processedFiles, zipPath);
+          return { success: true, zipFile: zipPath };
+        }
+
+        return { success: true, file: processedFiles[0] };
+      } catch (error) {
+        console.error("Error in converting and downloading media: ", error);
+        throw new Error("Failed to convert or download media");
+      }
+    }),
 });
