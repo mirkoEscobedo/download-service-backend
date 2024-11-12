@@ -42,11 +42,6 @@ export const mediaRouter = router({
     return chanMediaList;
   }),
 
-  downloadMedia: publicProcedure.input(z.object({ mediaUrls: z.array(z.string()) })).mutation(async ({ input }) => {
-    const downloadFiles = await fetchThreadMedia(input.mediaUrls);
-    return { succes: true, files: downloadFiles };
-  }),
-
   convertAndDownloadMedia: publicProcedure
     .input(
       z.object({
