@@ -11,15 +11,26 @@ export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]>
     console.log("setting up files in a temp path", fileName);
     const outputPath = path.join(tmpdir(), fileName);
 
-    const response = await axios.get(url, { responseType: "stream" });
-    await new Promise((resolve, reject) => {
-      const writer = fs.createWriteStream(outputPath);
-      response.data.pipe(writer);
-      writer.on("finish", resolve);
-      writer.on("error", reject);
-    });
+    try {
+      const response = await axios.get(url, { responseType: "stream" });
+      await new Promise<void>((resolve, reject) => {
+        const writer = fs.createWriteStream(outputPath);
+        response.data.pipe(writer);
+        writer.on("finish", () => {
+          console.log(`Download complete: ${fileName}`);
+          resolve();
+        });
+        writer.on("error", (err) => {
+          console.error(`Error writing the file ${fileName}`, err);
+          reject(err);
+        });
+      });
 
-    return outputPath;
+      return outputPath;
+    } catch (error) {
+      console.error(error);
+      throw new Error("error while downloading");
+    }
   });
   return Promise.all(downloadPromises);
 }
