@@ -23,6 +23,8 @@ export async function createZipFromFiles(filePaths: string[], outputFilePath: st
     filePaths.forEach((filePath) => {
       archive.file(filePath, { name: path.basename(filePath) });
     });
+    console.log("finilizing archive...");
     archive.finalize();
+    console.log("Archive finalized successfully.");
   });
 }

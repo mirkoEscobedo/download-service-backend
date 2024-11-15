@@ -45,11 +45,12 @@ export const mediaRouter = router({
   convertAndDownloadMedia: publicProcedure
     .input(
       z.object({
-        mediaUrls: z.array(z.string()),
+        mediaUrls: z.array(z.string()).nonempty(),
         format: z.string().optional(),
       }),
     )
     .mutation(async ({ input }) => {
+      console.log(input);
       const { mediaUrls, format } = input;
 
       try {
