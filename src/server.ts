@@ -12,8 +12,8 @@ import helmet from "helmet";
 import { pino } from "pino";
 import { imageProxyHandler } from "./common/middleware/imageProxy";
 import { appRouter } from "./trpc";
+import { createContext } from "./trpc/context";
 
-const createContext = () => ({});
 const logger = pino({ name: "server start" });
 const app: Express = express();
 
