@@ -52,10 +52,10 @@ app.use(
   }),
 );
 // Swagger UI
-// app.use(openAPIRouter);
+app.use(openAPIRouter);
 
 // Error handlers
-// app.use(errorHandler());
+app.use(errorHandler());
 
 // TRPC
 
