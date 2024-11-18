@@ -75,6 +75,8 @@ export const mediaRouter = router({
         const fileName = path.basename(filePath);
         ctx.res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
         ctx.res.setHeader("Content-Type", "video/webm");
+
+        console.log(ctx.res);
         console.log(filePath);
 
         ctx.res.sendFile(filePath);
