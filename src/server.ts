@@ -11,6 +11,7 @@ import express, { type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
 import { imageProxyHandler } from "./common/middleware/imageProxy";
+import { fileServer } from "./controllers/fileServer";
 import { appRouter } from "./trpc";
 import { createContext } from "./trpc/context";
 
@@ -51,6 +52,8 @@ app.use(
     createContext,
   }),
 );
+
+app.get("/download", fileServer);
 // Swagger UI
 app.use(openAPIRouter);
 

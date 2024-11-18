@@ -66,21 +66,12 @@ export const mediaRouter = router({
         if (processedFiles.length > 1) {
           const zipPath = path.join(tmpdir(), `download_${Date.now()}.zip`);
           await createZipFromFiles(processedFiles, zipPath);
-          ctx.res.setHeader("Content-Disposition", `attachment; filename="donwloaded_media.zip"`);
-          ctx.res.setHeader("Content-Type", "application/zip");
-          return ctx.res.sendFile(zipPath);
+          return { filePath: zipPath };
         }
 
         const filePath = processedFiles[0];
-        const fileName = path.basename(filePath);
-        ctx.res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-        ctx.res.setHeader("Content-Type", "video/webm");
-
-        console.log(ctx.res);
         console.log(filePath);
-
-        ctx.res.sendFile(filePath);
-        return;
+        return { filePath };
       } catch (error) {
         console.error("Error in converting and downloading media: ", error);
         throw new Error("Failed to convert or download media");
