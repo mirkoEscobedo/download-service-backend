@@ -5,9 +5,12 @@ import axios from "axios";
 
 export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]> {
   console.log("starting download", mediaUrls);
-  const downloadPromises = mediaUrls.map(async (url, index) => {
+  const downloadedFiles: string[] = [];
+
+  for (let i = 0; i < mediaUrls.length; i++) {
+    const url = mediaUrls[i];
     const fileExtension = path.extname(url);
-    const fileName = `media_${Date.now()}_${index}${fileExtension}`;
+    const fileName = `media_${Date.now()}_${i}${fileExtension}`;
     console.log("setting up files in a temp path", fileName);
     const outputPath = path.join(tmpdir(), fileName);
 
@@ -25,14 +28,15 @@ export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]>
           reject(err);
         });
       });
-      delay(2000);
-      return outputPath;
+      downloadedFiles.push(outputPath);
+      await delay(2000);
     } catch (error) {
       console.error(error);
       throw new Error("error while downloading");
     }
-  });
-  return Promise.all(downloadPromises);
+  }
+
+  return downloadedFiles;
 }
 
 function delay(ms: number) {
