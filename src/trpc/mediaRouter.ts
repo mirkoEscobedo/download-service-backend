@@ -66,6 +66,7 @@ export const mediaRouter = router({
         if (processedFiles.length > 1) {
           const zipPath = path.join(tmpdir(), `download_${Date.now()}.zip`);
           await createZipFromFiles(processedFiles, zipPath);
+          console.log(zipPath);
           return { filePath: zipPath };
         }
 

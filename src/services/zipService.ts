@@ -3,6 +3,7 @@ import path from "node:path";
 import archiver from "archiver";
 
 export async function createZipFromFiles(filePaths: string[], outputFilePath: string): Promise<string> {
+  console.log(filePaths, outputFilePath);
   return new Promise((resolve, reject) => {
     const output = fs.createWriteStream(outputFilePath);
     const archive = archiver("zip", { zlib: { level: 9 } });

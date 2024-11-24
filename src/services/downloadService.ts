@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import { tmpdir } from "node:os";
-import path from "node:path";
+import path, { resolve } from "node:path";
 import axios from "axios";
 
 export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]> {
@@ -25,7 +25,7 @@ export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]>
           reject(err);
         });
       });
-
+      delay(2000);
       return outputPath;
     } catch (error) {
       console.error(error);
@@ -33,4 +33,8 @@ export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]>
     }
   });
   return Promise.all(downloadPromises);
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
