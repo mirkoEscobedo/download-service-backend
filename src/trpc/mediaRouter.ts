@@ -8,6 +8,8 @@ import { createZipFromFiles } from "@/services/zipService";
 import { z } from "zod";
 import { publicProcedure, router } from "./trpc";
 
+export const progressMap: Record<string, any> = {};
+
 export const mediaRouter = router({
   getChanMediaList: publicProcedure.input(z.object({ link: z.string() })).query(async ({ input }) => {
     const { board, link: modifiedLink } = transformLink(input.link);

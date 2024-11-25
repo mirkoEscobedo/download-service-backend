@@ -54,6 +54,8 @@ app.use(
 );
 
 app.get("/download", fileServer);
+
+app.get("/progress");
 // Swagger UI
 app.use(openAPIRouter);
 
