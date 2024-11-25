@@ -5,7 +5,6 @@ import { convertMedia } from "@/services/convertService";
 import { downloadMediaFiles } from "@/services/downloadService";
 import { fetchThreadData, fetchThreadMedia } from "@/services/puppeteerService";
 import { createZipFromFiles } from "@/services/zipService";
-import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { publicProcedure, router } from "./trpc";
 
@@ -48,24 +47,23 @@ export const mediaRouter = router({
   convertAndDownloadMedia: publicProcedure
     .input(
       z.object({
+        taskId: z.string(),
         mediaUrls: z.array(z.string()).nonempty(),
         format: z.string().optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const taskId = uuidv4();
+      const { taskId, mediaUrls, format } = input;
       progressMap[taskId] = {
         status: "Initializing",
         progress: 0,
       };
 
       console.log(`Task ID; ${taskId}`, input);
-      const { mediaUrls, format } = input;
-
       try {
         progressMap[taskId].status = "Downloading";
         progressMap[taskId].progress = 10;
-
+        console.log(progressMap[taskId]);
         const downloadedFiles = await downloadMediaFiles(mediaUrls, taskId);
 
         let processedFiles: string[] = [];
@@ -76,6 +74,7 @@ export const mediaRouter = router({
           processedFiles = await Promise.all(
             downloadedFiles.map((filePath, index) => {
               progressMap[taskId].progress += Math.round(40 / downloadedFiles.length);
+              console.log(progressMap[taskId]);
               return convertMedia(filePath, format);
             }),
           );
@@ -87,11 +86,13 @@ export const mediaRouter = router({
         if (processedFiles.length > 1) {
           progressMap[taskId].status = "Zipping";
           progressMap[taskId].progress = 95;
+          console.log(progressMap[taskId]);
           const zipPath = path.join(tmpdir(), `download_${Date.now()}.zip`);
           await createZipFromFiles(processedFiles, zipPath);
           console.log(zipPath);
           progressMap[taskId].progress = 100;
           progressMap[taskId].status = "Done";
+          console.log(progressMap[taskId]);
           return { filePath: zipPath };
         }
 
@@ -99,6 +100,7 @@ export const mediaRouter = router({
         console.log(filePath);
         progressMap[taskId].progress = 100;
         progressMap[taskId].status = "Done";
+        console.log(progressMap[taskId]);
         return { filePath };
       } catch (error) {
         console.error("Error in converting and downloading media: ", error);

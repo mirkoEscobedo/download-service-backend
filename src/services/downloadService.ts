@@ -32,6 +32,7 @@ export async function downloadMediaFiles(mediaUrls: string[], taskId: string): P
       });
       downloadedFiles.push(outputPath);
       progressMap[taskId].progress = Math.round((i / mediaUrls.length) * 40);
+      console.log(progressMap[taskId]);
       await delay(2000);
     } catch (error) {
       console.error(error);

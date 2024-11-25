@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 function getTaskId(req: Request, res: Response) {
   const taskId = uuidv4();
   progressMap[taskId] = { status: "Pending", progress: 0 };
+  console.log("new task created: ", taskId);
   res.json({ taskId });
 }
 
