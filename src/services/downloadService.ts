@@ -1,9 +1,11 @@
 import fs from "node:fs";
 import { tmpdir } from "node:os";
 import path, { resolve } from "node:path";
+import { progressMap } from "@/trpc/mediaRouter";
 import axios from "axios";
+import { UUIDTypes } from "uuid";
 
-export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]> {
+export async function downloadMediaFiles(mediaUrls: string[], taskId: string): Promise<string[]> {
   console.log("starting download", mediaUrls);
   const downloadedFiles: string[] = [];
 
@@ -29,6 +31,7 @@ export async function downloadMediaFiles(mediaUrls: string[]): Promise<string[]>
         });
       });
       downloadedFiles.push(outputPath);
+      progressMap[taskId].progress = Math.round((i / mediaUrls.length) * 40);
       await delay(2000);
     } catch (error) {
       console.error(error);
