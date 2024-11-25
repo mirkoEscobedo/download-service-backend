@@ -12,6 +12,7 @@ import helmet from "helmet";
 import { pino } from "pino";
 import { imageProxyHandler } from "./common/middleware/imageProxy";
 import { fileServer } from "./controllers/fileServer";
+import { getTaskId, getTaskStatus } from "./services/taskService";
 import { appRouter } from "./trpc";
 import { createContext } from "./trpc/context";
 
@@ -55,7 +56,8 @@ app.use(
 
 app.get("/download", fileServer);
 
-app.get("/progress");
+app.get("/task", getTaskId);
+app.get("/progress/:taskId", getTaskStatus);
 // Swagger UI
 app.use(openAPIRouter);
 
