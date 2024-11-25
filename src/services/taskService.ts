@@ -10,12 +10,36 @@ function getTaskId(req: Request, res: Response) {
 
 function getTaskStatus(req: Request, res: Response) {
   const { taskId } = req.params;
-  const progress = progressMap[taskId];
 
-  if (!progress) {
+  if (!progressMap[taskId]) {
     return res.status(400).json({ message: "Task not found" });
   }
-  return res.json(progress);
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  res.write(`data: ${JSON.stringify(progressMap[taskId])}\n\n`);
+
+  const intervelId = setInterval(() => {
+    if (!progressMap[taskId]) {
+      res.write("event:end\n");
+      res.write("data: Task not found\n\n");
+      clearInterval(intervelId);
+      res.end();
+    } else {
+      res.write(`data: ${JSON.stringify(progressMap[taskId])}\n\n`);
+
+      if (progressMap[taskId].status === "Done" || progressMap[taskId].status === "Failed") {
+        clearInterval(intervelId);
+        res.end();
+      }
+    }
+  }, 1000);
+
+  req.on("close", () => {
+    clearInterval(intervelId);
+  });
 }
 
 export { getTaskId, getTaskStatus };
