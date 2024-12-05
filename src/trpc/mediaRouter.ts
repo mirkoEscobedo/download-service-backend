@@ -62,7 +62,6 @@ export const mediaRouter = router({
       console.log(`Task ID; ${taskId}`, input);
       try {
         progressMap[taskId].status = "Downloading";
-        progressMap[taskId].progress = 10;
         console.log(progressMap[taskId]);
         const downloadedFiles = await downloadMediaFiles(mediaUrls, taskId);
 
