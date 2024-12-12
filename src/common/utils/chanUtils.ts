@@ -20,7 +20,7 @@ export function transformLink(normalThreadUrl: string) {
 }
 
 function addCors(cdnUrl: string): string {
-  const corsUrl: string = `https://corsproxy.io/?${encodeURIComponent(cdnUrl)}`;
+  const corsUrl: string = `https://corsproxy.io/?key=0676e644&url=${cdnUrl}`;
   return corsUrl;
 }
 
