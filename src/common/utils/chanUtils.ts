@@ -11,18 +11,18 @@ export function transformLink(normalThreadUrl: string) {
       throw new Error("Invalid or Expired thread url");
     }
     const cdnUrl: string = `https://a.4cdn.org/${board}/thread/${threadId}.json`;
-    const finalUrl: string = addCors(cdnUrl);
-    return { board, link: finalUrl };
+    // const finalUrl: string = addCors(cdnUrl);
+    return { board, link: cdnUrl };
   } catch (error) {
     console.log(error);
     throw new Error("Invalid or Expired thread url");
   }
 }
 
-function addCors(cdnUrl: string): string {
-  const corsUrl: string = `https://corsproxy.io/?key=0676e644&url=${cdnUrl}`;
-  return corsUrl;
-}
+// function addCors(cdnUrl: string): string {
+//   const corsUrl: string = `https://corsproxy.io/?key=0676e644&url=${cdnUrl}`;
+//   return corsUrl;
+// }
 
 export async function getBase64Thumbnail(url: string): Promise<string | null> {
   try {
